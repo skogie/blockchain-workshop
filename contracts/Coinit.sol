@@ -1,7 +1,5 @@
 pragma solidity ^0.4.2;
 
-import "ConvertLib.sol";
-
 // This is just a simple example of a coin-like contract.
 // It is not standards compatible and cannot be expected to talk to other
 // coin/token contracts. If you want to create a standards-compliant
@@ -19,14 +17,13 @@ contract Coinit {
 	address admin;
 
 
-	event Transfer(address indexed _from, address indexed _to, int256 _value);
-
 	function Coinit() {
 		balances[tx.origin] = 0;
 	}
 
 	function validateEmployee(address emplyeeAdr) isAdmin() {
 		valideted[emplyeeAdr] = true;
+		Validate(emplyeeAdr, true);
 	}
 
 
@@ -56,13 +53,13 @@ contract Coinit {
         if (msg.sender == admin) _;
     }
 
-    modifier onlyWithBalanceMoreThan(uint amount) {
+    modifier onlyWithBalanceMoreThan(int amount) {
         if (balances[msg.sender] >= amount) _;
     }
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    event Transfer(address indexed _from, address indexed _to, int256 _value);
 
-    event Validate(address admin, address indexed _spender, uint256 _value);
+    event Validate(address indexed _employee, bool _value);
     
-    event Genesis(address indexed _to, uint256 _value);
+    event Genesis(address indexed _to, int256 _value);
 }
