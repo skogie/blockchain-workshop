@@ -1,5 +1,5 @@
+var Coinit = artifacts.require("./Coinit.sol");
+
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.autolink();
-  deployer.deploy(MetaCoin);
+  deployer.deploy(Coinit)
 };

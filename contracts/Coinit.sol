@@ -19,6 +19,8 @@ contract Coinit {
 
 	function Coinit() {
 		balances[tx.origin] = 0;
+        admin = tx.origin;
+        Genesis(tx.origin, 0);
 	}
 
 	function validateEmployee(address emplyeeAdr) isAdmin() {
