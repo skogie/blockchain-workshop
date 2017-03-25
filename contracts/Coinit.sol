@@ -13,6 +13,7 @@ contract Coinit {
         string mail;
         string name;
         bool validated;
+        bool exist;
     }
     
     struct TinyAccount {
@@ -35,13 +36,13 @@ contract Coinit {
 
     function validateEmployee(address _emplyeeAdr) isAdmin() {
         Account acc = accounts[_emplyeeAdr];
-        accounts[_emplyeeAdr] = Account(acc.addr, acc.amount, acc.mail, acc.name, true);
+        accounts[_emplyeeAdr].validated = true;
         accountsArray.push(_emplyeeAdr);
         Validate(_emplyeeAdr, true);
     }
     
     function createAccount(string _name, string _mail) {
-        accounts[msg.sender] = Account(msg.sender, 0, _name, _mail, false);
+        accounts[msg.sender] = Account(msg.sender, 0, _name, _mail, false, true);
         AccountCreated(msg.sender, 0, _name, _mail, false);
     }
 
@@ -59,26 +60,31 @@ contract Coinit {
     }
 
     function payOutOnNextSalary(int _amount) returns(bool sufficient) {
-        if (accounts[msg.sender].amount < _amount) return false;
-        accounts[msg.sender].amount -= _amount;
-        amountToBePaidOut.push(TinyAccount(msg.sender, _amount));
+        if (getBalance() < _amount) return false;
+        // accounts[msg.sender].amount -= _amount;
+        //amountToBePaidOut.push(TinyAccount(msg.sender, _amount));
         PayOut(msg.sender, _amount);
         return true;
     }
     
     function payOut() isAdmin {
-        for (uint i = 0; i < amountToBePaidOut.length; i++) {
+        /*for (uint i = 0; i < amountToBePaidOut.length; i++) {
             address addr = amountToBePaidOut[i].addr;
             int amount = amountToBePaidOut[i].amount;
-            accounts[addr].amount -= amount;
-        }
-        delete amountToBePaidOut;
+            //accounts[addr].amount -= amount;
+            PayOut(addr, amount);
+        }*/
+        //delete amountToBePaidOut;
     }
     
     function createAndGiveMoneyToAllEmployees(int _amount) isAdmin {
         for (uint i = 0; i < accountsArray.length; i++) {
             createAndSendCoin(accountsArray[i], _amount);
         }
+    }
+
+    function accountExists() constant returns(bool) {
+        return accounts[msg.sender].exist == true;
     }
 
     function getBalance(address _addr) constant returns(int) {
@@ -101,7 +107,7 @@ contract Coinit {
         return accounts[_addr].validated;
     }
 
-    function getAdmin(address _addr) isAdmin constant returns(bool) {
+    function getAdmin() isAdmin constant returns(bool) {
         return true;
     }
 
