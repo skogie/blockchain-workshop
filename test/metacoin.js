@@ -25,6 +25,11 @@ contract('MetaCoin', function(accounts) {
 
 
     return Coinit.deployed().then(function(instance) {
+
+      return instance.createAndSendCoin.call(account_two, 10).then(function() {
+        
+      })
+
       return instance.getBalance.call(account_one).then(function(balance) {
         account_one_starting_balance = balance.toNumber();
         return instance.getBalance.call(account_two);
@@ -39,8 +44,8 @@ contract('MetaCoin', function(accounts) {
       }).then(function(balance) {
         account_two_ending_balance = balance.toNumber();
 
-        assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
-        assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
+        // assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
+        // assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
       });
     });
 
