@@ -7,7 +7,7 @@ body {
 
 label {
   display: inline-block;
-  width: 100px;
+  width: 150px;
 }
 
 input {
@@ -29,8 +29,8 @@ h1, h2 {
 }
 
 h2 {
-  color: #AAA;
-  font-size: 32px;
+  color: black;
+  font-size: 25px;
 }
 
 h3 {
