@@ -6,41 +6,67 @@ import "../contracts/Coinit.sol";
 
 contract TestCoinit {
 
+  Coinit owner;
 
-    struct Account {
-        address addr;
-        int amount;
-        string mail;
-        string name;
-        bool validated;
-    }
-
+  function beforeAll() {
+    owner = new Coinit();
+    createAccount(owner);
+  }
 
   function testInitialBalanceUsingDeployedContract() {
-    Coinit meta = Coinit(DeployedAddresses.Coinit());
-
     int expected = 0;
-
-    Assert.equal(meta.getBalance(tx.origin), expected, "Owner should have 0 CoinIt initially");
+    Assert.equal(owner.getBalance(), expected, "Owner should have 0 CoinIt initially");
+    Assert.equal(owner.isAccountAdmin(), true, "Expected the owner to be admin");
   }
 
   function testCreateAccount() {
     Coinit meta = Coinit(DeployedAddresses.Coinit());
 
-    /* string name = "John Doe";
-    string mail = "spam@knowit.no"; */
+    Assert.equal(meta.accountExists(), false, "Account should not exist yet.");
 
+    createAccount(meta);
+
+    Assert.equal(meta.accountExists(), true, "Account should exist.");
+
+    Assert.equal(meta.getBalance(), 0, "The balance of the account should be 0.");
+    Assert.equal(meta.getValidated(tx.origin), false, "The account should not be validated.");
+  }
+
+  function testThatCreatorIsAdmin() {
+    Coinit meta = new Coinit();
+    Assert.equal(meta.isAccountAdmin(), true, "Expected the owner to be admin");
+  }
+
+  function testValidateEmployee() {
+    owner.validateEmployee(address(owner));
+    Assert.equal(owner.getValidated(address(owner)), true, "Expected the account to be validated.");
+  }
+
+  function testCreateAndSendCoin() {
+    createAccount(owner);
+    Assert.equal(owner.isAccountAdmin(), true, "Expected the owner to be owner");
+    owner.createAndSendCoin(address(owner), 100);
+    Assert.equal(owner.getBalance(address(owner)), 100, "The balance is not as expected.");
+  }
+
+  function testPayOutNextSalary() {
+    int balance = owner.getBalance(owner);
+    Assert.equal(owner.createAndSendCoin(owner, 100), true, "Owner was not able to create and send money");
+    Assert.equal(owner.getBalance(owner), balance + 100, "The balance for owner is not as expected.");
+    Assert.equal(owner.markForPayOutOnNextSalary(owner, 100), true, "Was not able to mark money for being payed out as salary.");
+    Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
+    owner.payOut();
+    Assert.equal(owner.getBalance(owner), balance, "The balance is not as expected.");
+  }
+
+  function testGiveMoneyToAllEmployees() {
+    int balance = owner.getBalance(owner);
+    owner.createAndGiveMoneyToAllEmployees(100);
+    Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
+  }
+
+  function createAccount(Coinit meta) {
     meta.createAccount("name", "mail");
-
-    /* Assert.equal(meta.getName(tx.origin), name, "The name of the account that was created does not match the expected one.");
-    Assert.equal(meta.getMail(tx.origin), mail, "The mail of the account that was created does not match the expected one."); */
-    Assert.equal(meta.getBalance(tx.origin), 0, "The balance of the account that was created does not match the expected one.");
-    Assert.equal(meta.getValidated(tx.origin), false, "The validated attribute of the account that was created does not match the expected one.");
-
-    Assert.equal(meta.getAdmin(tx.origin), true, "Expected the address to be admin");
-
-    meta.validateEmployee(tx.origin);
-    Assert.equal(meta.getValidated(tx.origin), true, "The validated attribute of the account that was created does not match the expected one.");
   }
 
 }
