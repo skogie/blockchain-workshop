@@ -1,5 +1,10 @@
 pragma solidity ^0.4.8;
 
+// This is just a simple example of a coin-like contract.
+// It is not standards compatible and cannot be expected to talk to other
+// coin/token contracts. If you want to create a standards-compliant
+// token, see: https://github.com/ConsenSys/Tokens. Cheers!
+
 contract Coinit {
     
     struct Account {
@@ -29,11 +34,9 @@ contract Coinit {
 
     function validateEmployee(address _emplyeeAdr) isAdmin() {
         Account acc = accounts[_emplyeeAdr];
-        if (!acc.validated) {
-            accounts[_emplyeeAdr].validated = true;
-            accountsArray.push(_emplyeeAdr);
-            Validate(_emplyeeAdr, true);
-        }
+        accounts[_emplyeeAdr].validated = true;
+        accountsArray.push(_emplyeeAdr);
+        Validate(_emplyeeAdr, true);
     }
     
     function createAccount(string _name, string _mail)  returns(bool success) {
@@ -87,10 +90,6 @@ contract Coinit {
     function accountExists() constant returns(bool) {
         return accounts[msg.sender].exist == true;
     }
-
-    function getBalance(address _addr) constant returns(int) {
-        return accounts[_addr].amount;
-    }
     
     function getBalance() constant returns(int) {
         return accounts[msg.sender].amount;
@@ -98,6 +97,11 @@ contract Coinit {
 
     function getAdmin(address _addr) constant returns(bool) {
         return admin == _addr;
+    }
+
+    function getBalance(address adr) constant returns(int) {
+        Account acc = accounts[adr];
+        return acc.amount;
     }
 
     function getValidated(address _addr) constant returns(bool) {
