@@ -1,13 +1,13 @@
 {
-  "name": "truffle-init-webpack",
-  "version": "0.0.1",
-  "description": "Frontend example using truffle v3",
+  "name": "Blokckchain-workshop",
+  "version": "0.1.0",
+  "description": "Utviklingskonto paa blokchain",
   "scripts": {
     "lint": "eslint ./",
     "build": "webpack",
     "dev": "webpack-dev-server"
   },
-  "author": "Douglas von Kohorn",
+  "author": "Jokere.no",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.22.2",

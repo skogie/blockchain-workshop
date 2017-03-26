@@ -8,6 +8,7 @@ contract('MetaCoin', function(accounts) {
       assert.equal(balance.valueOf(), 0, "0 wasn't in the first account");
     });
   });
+
   it("should send coin correctly", function() {
 
     // Get initial balances of first and second account.
@@ -23,43 +24,26 @@ contract('MetaCoin', function(accounts) {
 
     var amount = 10;
 
-
+    var meta;
     return Coinit.deployed().then(function(instance) {
-      return instance.createAndSendCoin.sendTransaction(account_two, 10, {from: account_one});
-      }).then(function(instance) {
-        return instance.getBalance.call(account_two);
-        }).then(function(balance) {
-          account_two_ending_balance = balance.valueOf();
-          console.log(balance.valueOf());
-          assert.equal(account_two_ending_balance, 10, "Amount wasn't correctly created and sent to the receiver");
-      });
-
-      return instance.getBalance.call(account_one).then(function(balance) {
-        account_one_starting_balance = balance.toNumber();
-        return instance.getBalance.call(account_two);
-      }).then(function(balance) {
-        account_two_ending_balance = balance.toNumber();
-        return instance.sendCoin(account_three, 5, {from: account_two});
+      meta = instance;
+      return meta.createAndSendCoin.sendTransaction(account_two, 10, {from: account_one});
       }).then(function() {
-        return instance.getBalance.call(account_two);
+        return meta.getBalance.call(account_two, {from: account_two});
       }).then(function(balance) {
-        account_two_ending_balance = balance.toNumber();
-        return instance.getBalance.call(account_three);
-      }).then(function(balance) {
-        account_three_ending_balance = balance.toNumber();
-
-        assert.equal(account_one_ending_balance, 10, "Account 1 should have balance 0,-");
-        assert.equal(account_two_ending_balance, 5, "Amount wasn't correctly sent to the receiver");
-        assert.equal(account_three_ending_balance, 6, "Amount wasn't correctly sent to the receiver");
+          account_two_ending_balance = balance.valueOf();
+          assert.equal(account_two_ending_balance, 10, "Amount wasn't correctly created and sent to the receiver");
+      }).then(function() {
+        return meta.sendCoin.sendTransaction(account_three, 5, {from: account_two});
+      }).then(function() {
+        return meta.getBalance.call(account_two, {from: account_two});
+      }).then(function(acc2balance) {
+        account_two_ending_balance = acc2balance.valueOf();
+        return meta.getBalance.call(account_three, {from: account_three});
+      }).then(function(balanceacc3) {
+        account_three_ending_balance = balanceacc3.valueOf();                       
+        assert.equal(account_two_ending_balance, 5, "Amount on account two wasnt 5");
+        assert.equal(account_three_ending_balance, 5, "Amount on account three wasnt 5");        
       });
-
-      return instance.sendCoin.call(account_three, 5, {from: account_two}).then(function() {
-        
-      });
-
-
-
-
-
     });
 });
