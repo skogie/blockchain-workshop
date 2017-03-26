@@ -40,8 +40,8 @@ contract('MetaCoin', function(accounts) {
       }).then(function(acc2balance) {
         account_two_ending_balance = acc2balance.valueOf();
         return meta.getBalance.call(account_three, {from: account_three});
-      }).then(function(balanceacc3) {
-        account_three_ending_balance = balanceacc3.valueOf();                       
+      }).then(function(acc3balance) {
+        account_three_ending_balance = acc3balance.valueOf();                       
         assert.equal(account_two_ending_balance, 5, "Amount on account two wasnt 5");
         assert.equal(account_three_ending_balance, 5, "Amount on account three wasnt 5");        
       });
