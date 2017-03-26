@@ -99,8 +99,8 @@ window.App = {
 
 
   createAccount: function() {
-    // var name = document.getElementById("name").value;
-    // var email = document.getElementById("email").value;
+    var name = document.getElementById("name").value;
+    var email = document.getElementById("email").value;
     var self = this;
 
     var createAddress = document.getElementById("createdropdown");
@@ -109,7 +109,7 @@ window.App = {
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
-      return meta.createAccount.sendTransaction(/*name, email,*/ {from: address});
+      return meta.createAccount.sendTransaction(name, email, {from: address});
     }).then(function() {
       console.log(address);
       self.setStatus("Account created!");
