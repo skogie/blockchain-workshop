@@ -14,7 +14,7 @@ contract Coinit {
         int amount;
     }
     
-    mapping (address => Account) accounts;
+    mapping (address => Account) public accounts;
     
     address[] private accountsArray;
 
