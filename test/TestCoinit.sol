@@ -1,4 +1,4 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.8;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
@@ -40,13 +40,19 @@ contract TestCoinit {
   function testValidateEmployee() {
     owner.validateEmployee(address(owner));
     Assert.equal(owner.getValidated(address(owner)), true, "Expected the account to be validated.");
+
+    int balance = owner.getBalance(owner);
+    owner.validateEmployee(address(owner));
+    owner.createAndGiveMoneyToAllEmployees(100);
+    Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
   }
 
   function testCreateAndSendCoin() {
     createAccount(owner);
     Assert.equal(owner.isAccountAdmin(), true, "Expected the owner to be owner");
+    int balance = owner.getBalance(owner);
     owner.createAndSendCoin(address(owner), 100);
-    Assert.equal(owner.getBalance(address(owner)), 100, "The balance is not as expected.");
+    Assert.equal(owner.getBalance(address(owner)), balance + 100, "The balance is not as expected.");
   }
 
   function testPayOutNextSalary() {

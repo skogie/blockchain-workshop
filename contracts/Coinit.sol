@@ -1,10 +1,5 @@
 pragma solidity ^0.4.8;
 
-// This is just a simple example of a coin-like contract.
-// It is not standards compatible and cannot be expected to talk to other
-// coin/token contracts. If you want to create a standards-compliant
-// token, see: https://github.com/ConsenSys/Tokens. Cheers!
-
 contract Coinit {
     
     struct Account {
@@ -34,9 +29,11 @@ contract Coinit {
 
     function validateEmployee(address _emplyeeAdr) isAdmin() {
         Account acc = accounts[_emplyeeAdr];
-        accounts[_emplyeeAdr].validated = true;
-        accountsArray.push(_emplyeeAdr);
-        Validate(_emplyeeAdr, true);
+        if (!acc.validated) {
+            accounts[_emplyeeAdr].validated = true;
+            accountsArray.push(_emplyeeAdr);
+            Validate(_emplyeeAdr, true);
+        }
     }
     
     function createAccount(string _name, string _mail)  returns(bool success) {
