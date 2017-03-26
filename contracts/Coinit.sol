@@ -1,10 +1,5 @@
 pragma solidity ^0.4.8;
 
-// This is just a simple example of a coin-like contract.
-// It is not standards compatible and cannot be expected to talk to other
-// coin/token contracts. If you want to create a standards-compliant
-// token, see: https://github.com/ConsenSys/Tokens. Cheers!
-
 contract Coinit {
     
     struct Account {
@@ -21,15 +16,15 @@ contract Coinit {
     
     mapping (address => Account) accounts;
     
-    address[] accountsArray;
+    address[] private accountsArray;
 
-    TinyAccount[] amountToBePaidOut;
+    TinyAccount[] private amountToBePaidOut;
 
-    address admin;
+    address private admin;
 
     function Coinit() {
         admin = msg.sender;
-        Genesis(msg.sender, 0);
+        Genesis(msg.sender);
     }
 
     function validateEmployee(address _emplyeeAdr) isAdmin() {
@@ -52,8 +47,7 @@ contract Coinit {
         return true;
     }
 
-    function sendCoin(address _receiver, int _amount) returns(bool sufficient) {
-        if (accounts[msg.sender].amount < _amount) return false;
+    function sendCoin(address _receiver, int _amount) onlyWithBalanceMoreThan(_amount) returns(bool sufficient) {
         accounts[msg.sender].amount -= _amount;
         accounts[_receiver].amount += _amount;
         Transfer(msg.sender, _receiver, _amount);
@@ -61,9 +55,8 @@ contract Coinit {
     }
 
     function markForPayOutOnNextSalary(address _addr, int _amount) isAdmin returns(bool sufficient) {
-        if (getBalance(_addr) < _amount) return false;
         amountToBePaidOut.push(TinyAccount(_addr, _amount));
-        PayOut(_addr, _amount);
+        MarkForPayOut(_addr, _amount);
         return true;
     }
 
@@ -87,16 +80,16 @@ contract Coinit {
         }
     }
 
+    function kill() isAdmin {
+        selfdestruct(admin);
+    }
+
     function accountExists() constant returns(bool) {
         return accounts[msg.sender].exist == true;
     }
     
     function getBalance() constant returns(int) {
         return accounts[msg.sender].amount;
-    }
-
-    function getAdmin(address _addr) constant returns(bool) {
-        return admin == _addr;
     }
 
     function getBalance(address adr) constant returns(int) {
@@ -124,6 +117,10 @@ contract Coinit {
         return msg.sender;
     }
 
+    function getNumberOfValidatedEmployees() constant returns(uint) {
+        return accountsArray.length;
+    }
+
     modifier isValidated() {
         if (accounts[msg.sender].validated == true) _;
     }
@@ -142,9 +139,11 @@ contract Coinit {
 
     event Validate(address indexed _employee, bool _value);
     
-    event Genesis(address indexed _to, int _value);
+    event Genesis(address indexed _admin);
 
     event PayOut(address indexed _account, int _value);
+
+    event MarkForPayOut(address indexed _account, int _value);
     
     event AccountCreated(address _addr, int amount, string _name, string _mail, bool validated);
 }

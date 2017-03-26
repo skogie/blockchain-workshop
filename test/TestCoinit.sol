@@ -45,6 +45,7 @@ contract TestCoinit {
     owner.validateEmployee(address(owner));
     owner.createAndGiveMoneyToAllEmployees(100);
     Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
+    Assert.equal(owner.getNumberOfValidatedEmployees(), 1, "The number of validated employees is not as expected.");
   }
 
   function testCreateAndSendCoin() {
