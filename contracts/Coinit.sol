@@ -29,9 +29,11 @@ contract Coinit {
 
     function validateEmployee(address _emplyeeAdr) isAdmin() {
         Account acc = accounts[_emplyeeAdr];
-        accounts[_emplyeeAdr].validated = true;
-        accountsArray.push(_emplyeeAdr);
-        Validate(_emplyeeAdr, true);
+        if (!acc.validated) {
+            accounts[_emplyeeAdr].validated = true;
+            accountsArray.push(_emplyeeAdr);
+            Validate(_emplyeeAdr, true);
+        }
     }
     
     function createAccount(string _name, string _mail)  returns(bool success) {
