@@ -1,13 +1,6 @@
 var Coinit = artifacts.require("./Coinit.sol");
 
 contract('Coinit', function(accounts) {
-  it("should put 0 Coinit in the first account", function() {
-    return Coinit.deployed().then(function(instance) {
-      return instance.getBalance.call(accounts[0]);
-    }).then(function(balance) {
-      assert.equal(balance.valueOf(), 0, "0 wasn't in the first account");
-    });
-  });
 
   it("should send coin correctly", function() {
 
