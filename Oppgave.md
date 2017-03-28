@@ -28,8 +28,8 @@ Implementer 'createAndGiveMoneyToAllEmployees'. Denne funksjonen skal sette inn 
 Implementer get-funksjonene.
 
 7.
-Implementer 'markForPayOutOnNextSalary'. og 'payOutOnNextSalary' Sistnevnte gir en ansatt mulighet til å markere en del av saldoen som han/hun ønsker at utbetales på neste lønning. Den første gir admin mulighet til å gjøre det samme for hvilken som helst ansatt.
+Implementer 'markForPayOutOnNextSalary'. og 'payOutOnNextSalary' Sistnevnte gir en ansatt mulighet til å markere en del av saldoen som han/hun ønsker at utbetales på neste lønning. Den første gir admin mulighet til å gjøre det samme for hvilken som helst ansatt. I denne oppgaven skal vi også gjøre en liten implementasjon i frontend for å få dette til å fungere, implementeres på linje 190 i app.js
 
 8.
-Implementer 'payout'. Her skal man loope over alle ansatte som har markert at noe skal utbetales, også fjerner man beløpet fra saldoen deres, ettersom dette nå kommer på lønning i NOK. Du skal slippe å bry deg om hvordan du faktisk skal få infoen inn i lønningssystemet.. :)
+Implementer 'payout'. Her skal man loope over alle ansatte som har markert at noe skal utbetales, også fjerner man beløpet fra saldoen deres, ettersom dette nå kommer på lønning i NOK. Du skal slippe å bry deg om hvordan du faktisk skal få infoen inn i lønningssystemet.. :) I denne oppgaven skal vi også gjøre en liten implementasjon i frontend for å få dette til å fungere, implementeres på linje 204 i app.js
 

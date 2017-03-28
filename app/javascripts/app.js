@@ -185,8 +185,9 @@ window.App = {
     var coin;
     Coinit.deployed().then(function(instance) {
       coin = instance;
+      
       //Hvordan skal vi gjore payOutOnNextSalary?
-      return coin.payOutOnNextSalary.sendTransaction(amount, {from: address});
+      return /*Skriv din kode her*/;
     }).catch(function(e) {
       console.log(e);
     });
@@ -198,8 +199,9 @@ window.App = {
 
     Coinit.deployed().then(function(instance) {
       coin = instance;
+
       //Hvordan skal vi gjore payOut?
-      return coin.payOut.sendTransaction({from: account});
+      return /*Skriv din kode her*/;
     }).catch(function(e) {
       console.log(e);
     });
