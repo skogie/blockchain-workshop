@@ -20,21 +20,21 @@ contract TestCoinit {
   }
 
   function testCreateAccount() {
-    Coinit meta = Coinit(DeployedAddresses.Coinit());
+    Coinit coinit = Coinit(DeployedAddresses.Coinit());
 
-    Assert.equal(meta.accountExists(), false, "Account should not exist yet.");
+    Assert.equal(coinit.accountExists(), false, "Account should not exist yet.");
 
-    createAccount(meta);
+    createAccount(coinit);
 
-    Assert.equal(meta.accountExists(), true, "Account should exist.");
+    Assert.equal(coinit.accountExists(), true, "Account should exist.");
 
-    Assert.equal(meta.getBalance(), 0, "The balance of the account should be 0.");
-    Assert.equal(meta.getValidated(tx.origin), false, "The account should not be validated.");
+    Assert.equal(coinit.getBalance(), 0, "The balance of the account should be 0.");
+    Assert.equal(coinit.getValidated(tx.origin), false, "The account should not be validated.");
   }
 
   function testThatCreatorIsAdmin() {
-    Coinit meta = new Coinit();
-    Assert.equal(meta.isAccountAdmin(), true, "Expected the owner to be admin");
+    Coinit coinit = new Coinit();
+    Assert.equal(coinit.isAccountAdmin(), true, "Expected the owner to be admin");
   }
 
   function testValidateEmployee() {
@@ -74,8 +74,8 @@ contract TestCoinit {
     Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
   }
 
-  function createAccount(Coinit meta) {
-    meta.createAccount("name", "mail");
+  function createAccount(Coinit coinit) {
+    coinit.createAccount("name", "mail");
   }
 
 }
