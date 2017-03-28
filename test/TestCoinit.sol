@@ -64,6 +64,8 @@ contract TestCoinit {
     Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
     owner.payOut();
     Assert.equal(owner.getBalance(owner), balance, "The balance is not as expected.");
+    owner.payOut();
+    Assert.equal(owner.getBalance(owner), balance, "The balance is not as expected.");
   }
 
   function testGiveMoneyToAllEmployees() {
