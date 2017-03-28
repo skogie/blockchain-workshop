@@ -1,29 +1,15 @@
-# truffle-init-webpack
-Example webpack project with Truffle. Includes contracts, migrations, tests, user interface and webpack build pipeline.
+# Installering
+1. Installer npm og node. Hvordan det gjøres finnes på https://nodejs.org/en/download/current/
+2. Installer truffle ved å kjøre `npm install -g truffle` og `npm install -g ethereumjs-testrpc`
+3. Verifiser at installasjonen er riktig ved å kjøre `truffle init webpack` i en tom mappe.
+    * I ett terminal vindu start testrpc med kommandoen `testrpc`
+    * I et annet vindu kjør `truffle compile` og `truffle migrate` i den rekkefølgen.
+    * Til slutt kjøres `npm run dev` som starter webpack-dev-serveren på `localhost:8080`
+    * Gå inn på siden og skriv inn et heltall som amount og et tall/hexadesimalt tall som adresse.
+    * Verifiser ved å trykke på "Send MetaCoin" at du mister det antallet META du har spesifiser over
 
-## Usage
+4. Til slutt vil vi gjerne at du installerer et program som heter Mist (https://github.com/ethereum/mist/releases). Dette er et program som lar deg 'browse' gjennom smart contracts i ethereumnettverket, og er hva vi kommer til å bruke for å deploye kontrakten vår til blockchainen (test-nettet).
+    * Når du har installert pass på at du er koblet til testnettet, det er markert ved en rød boks nederst i venstre hjørne som sier "Test-net".
+    * Når du har verifisert at du er koblet til testnettet vil testnet-blockchainen lastes ned, og det skal bare være å ha denne kjørende i bakgrunnen en stund så du kommer i sync. i skrivende stund er vi på blokk 768522 på testnettet.
 
-To initialize a project with this exapmple, run `truffle init webpack` inside an empty directory.
-
-## Building and the frontend
-
-1. First run `truffle compile`, then run `truffle migrate` to deploy the contracts onto your network of choice (default "development").
-1. Then run `npm run dev` to build the app and serve it on http://localhost:8080
-
-## Possible upgrades
-
-* Use the webpack hotloader to sense when contracts or javascript have been recompiled and rebuild the application. Contributions welcome!
-
-## Common Errors
-
-* **Error: Can't resolve '../build/contracts/MetaCoin.json'**
-
-This means you haven't compiled or migrated your contracts yet. Run `truffle compile` and `truffle migrate` first.
-
-Full error:
-
-```
-ERROR in ./app/main.js
-Module not found: Error: Can't resolve '../build/contracts/MetaCoin.json' in '/Users/tim/Documents/workspace/Consensys/test3/app'
- @ ./app/main.js 11:16-59
-```
+5. Når det kommer til Ether på testnettet er dette noe vi kan provide under workshoppen :)

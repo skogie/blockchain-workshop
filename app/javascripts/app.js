@@ -6,10 +6,10 @@ import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
-import metacoin_artifacts from '../../build/contracts/Coinit.json'
+import coinit_artifacts from '../../build/contracts/Coinit.json'
 
-// MetaCoin is our usable abstraction, which we'll use through the code below.
-var MetaCoin = contract(metacoin_artifacts);
+// Coinit is our usable abstraction, which we'll use through the code below.
+var Coinit = contract(coinit_artifacts);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -30,8 +30,8 @@ window.App = {
   start: function() {
     var self = this;
 
-    // Bootstrap the MetaCoin abstraction for Use.
-    MetaCoin.setProvider(web3.currentProvider);
+    // Bootstrap the Coinit abstraction for Use.
+    Coinit.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
@@ -47,8 +47,6 @@ window.App = {
 
       accounts = accs;
       account = accounts[0];
-
-      //self.refreshBalance();
 
       var select =  document.getElementById("drop");
       var select2 = document.getElementById("sendDropdown");
@@ -74,30 +72,6 @@ window.App = {
     });
   },
 
-  setStatus: function(message) {
-    var status = document.getElementById("status");
-    status.innerHTML = message;
-  },
-
-  refreshBalance: function() {
-    var self = this;
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(account, {from: account});
-    }).then(function(value) {
-      var balance_element = document.getElementById("balance2");
-      balance_element.innerHTML = value.valueOf();
-    }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error getting balance; see log.");
-    });
-  },
-
-  //    function createAccount(string _name, string _mail) {
-
-
   createAccount: function() {
     var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
@@ -106,16 +80,14 @@ window.App = {
     var createAddress = document.getElementById("createdropdown");
     var address = createAddress.options[createAddress.selectedIndex].value;
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.createAccount.sendTransaction(name, email, {from: address});
+    var coin;
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      return coin.createAccount.sendTransaction(name, email, {from: address});
     }).then(function() {
       console.log(address);
-      self.setStatus("Account created!");
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
     });
 
   },
@@ -131,19 +103,12 @@ window.App = {
     var toA = document.getElementById("todropdown");
     var toAddress = toA.options[toA.selectedIndex].value;
 
-    //createAndGiveMoneyToAllEmployees(int _amount)
-    this.setStatus("Initiating transaction... (please wait)");
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.sendCoin.sendTransaction(toAddress, amount, {from: fromAddress});
-    }).then(function() {
-      self.setStatus("Transaction complete!");
-      self.refreshBalance();
+    var coin;
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      return coin.sendCoin.sendTransaction(toAddress, amount, {from: fromAddress});
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
     });
   },
 
@@ -153,15 +118,12 @@ window.App = {
     var createAddress = document.getElementById("employee");
     var address = createAddress.options[createAddress.selectedIndex].value;
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.validateEmployee.sendTransaction(address,{from: account});
-    }).then(function() {
-      self.setStatus("Transaction complete!");
+    var coin;
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      return coin.validateEmployee.sendTransaction(address,{from: account});
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error getting balance; see log.");
     });
   },
 
@@ -169,33 +131,29 @@ window.App = {
     var self = this;
     var createAddress = document.getElementById("admindropdown");
     var address = createAddress.options[createAddress.selectedIndex].value;
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.isAccountAdmin(address);
+    var coin;
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      return coin.isAccountAdmin(address);
     }).then(function(admin) {
       console.log(admin)
       document.getElementById("isadmin").innerHTML = admin.valueOf();
-      self.setStatus("Transaction complete!");
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
     });
   },
 
   createAndGiveMoneyToAllEmployees: function() {
     var self = this;
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.createAndGiveMoneyToAllEmployees.sendTransaction(100, {from: account});
+    var coin;
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      return coin.createAndGiveMoneyToAllEmployees.sendTransaction(100, {from: account});
     }).then(function() {
       console.log(account)
-      self.setStatus("Transaction complete!");
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
     });
   },
 
@@ -207,19 +165,12 @@ window.App = {
     var dropAddress = document.getElementById("sendDropdown");
     var address = dropAddress.options[dropAddress.selectedIndex].value;
 
-    //createAndGiveMoneyToAllEmployees(int _amount)
-    this.setStatus("Initiating transaction... (please wait)");
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.createAndSendCoin.sendTransaction(address, amount, {from: account});
-    }).then(function() {
-      self.setStatus("Transaction complete!");
-      self.refreshBalance();
+    var coin;
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      return coin.createAndSendCoin.sendTransaction(address, amount, {from: account});
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
     });
   },
 
@@ -231,61 +182,58 @@ window.App = {
     var dropAddress = document.getElementById("payoutonnext");
     var address = dropAddress.options[dropAddress.selectedIndex].value;
 
-    //createAndGiveMoneyToAllEmployees(int _amount)
-    this.setStatus("Initiating transaction... (please wait)");
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.payOutOnNextSalary.sendTransaction(amount, {from: address});
-    }).then(function() {
-      self.setStatus("Transaction complete!");
-      self.refreshBalance();
+    var coin;
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      //Hvordan skal vi gjore payOutOnNextSalary?
+      return coin.payOutOnNextSalary.sendTransaction(amount, {from: address});
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
+    });
+  },
+
+  payOut: function() {
+    var self = this;
+    var coin;
+
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      //Hvordan skal vi gjore payOut?
+      return coin.payOut.sendTransaction({from: account});
+    }).catch(function(e) {
+      console.log(e);
     });
   },
 
   getCoin: function() {
     var self = this;
     var amount = parseInt(document.getElementById("balance2").value);
-    var meta;
+    var coin;
     var dropAddress = document.getElementById("drop");
     var address = dropAddress.options[dropAddress.selectedIndex].value;
 
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(address, {from: address});
+    Coinit.deployed().then(function(instance) {
+      coin = instance;
+      return coin.getBalance.call(address, {from: address});
     }).then(function(balance) {
       document.getElementById("balance2").innerHTML = balance.valueOf();
-      return meta.accountExists.call({from: address});
-      //    function accountExists() constant returns(bool) {
+      return coin.accountExists.call({from: address});
    }).then(function(name) {
-     self.setStatus("Transaction complete!");
      document.getElementById("name1").innerHTML = name.valueOf();
      console.log(name.valueOf());
      console.log(address);
-     // return meta.getMail(address);
-//    }).then(function(email) {
-//      self.setStatus("Transaction complete!");
-//      document.getElementById("email1").innerHTML = email.valueOf();
-//      console.log(email.valueOf());
-//      console.log(address);
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
     });
 
   }
-
 
 };
 
 window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
-    console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 MetaCoin, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
+    console.warn("Using web3 detected from external source. If you find that your accounts don't appear ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
     // Use Mist/MetaMask's provider
     window.web3 = new Web3(web3.currentProvider);
   } else {
