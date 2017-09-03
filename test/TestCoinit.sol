@@ -15,7 +15,6 @@ contract TestCoinit {
 
   function testInitialBalanceUsingDeployedContract() {
     int expected = 0;
-    Assert.equal(owner.getBalance(), expected, "Owner should have 0 CoinIt initially");
     Assert.equal(owner.isAccountAdmin(), true, "Expected the owner to be admin");
   }
 
@@ -24,11 +23,10 @@ contract TestCoinit {
 
     Assert.equal(coinit.accountExists(), false, "Account should not exist yet.");
 
-    createAccount(coinit);
+    Assert.equal(createAccount(coinit), true, "Create account should return true");
 
     Assert.equal(coinit.accountExists(), true, "Account should exist.");
 
-    Assert.equal(coinit.getBalance(), 0, "The balance of the account should be 0.");
     Assert.equal(coinit.getValidated(tx.origin), false, "The account should not be validated.");
   }
 
@@ -37,15 +35,9 @@ contract TestCoinit {
     Assert.equal(coinit.isAccountAdmin(), true, "Expected the owner to be admin");
   }
 
-  function testValidateEmployee() {
-    owner.validateEmployee(address(owner));
+  function testValidateAccount() {
+    owner.validateAccount(address(owner));
     Assert.equal(owner.getValidated(address(owner)), true, "Expected the account to be validated.");
-
-    int balance = owner.getBalance(owner);
-    owner.validateEmployee(address(owner));
-    owner.createAndGiveMoneyToAllEmployees(100);
-    Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
-    Assert.equal(owner.getNumberOfValidatedEmployees(), 1, "The number of validated employees is not as expected.");
   }
 
   function testCreateAndSendCoin() {
@@ -54,6 +46,23 @@ contract TestCoinit {
     int balance = owner.getBalance(owner);
     owner.createAndSendCoin(address(owner), 100);
     Assert.equal(owner.getBalance(address(owner)), balance + 100, "The balance is not as expected.");
+  }
+
+  function testGiveMoneyToAllAccounts() {
+    int balance = owner.getBalance(owner);
+    owner.createAndGiveMoneyToAllValidatedAccounts(100);
+    Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
+  }
+
+  function testCombinedFunctionality() {
+    owner.validateAccount(address(owner));
+    Assert.equal(owner.getValidated(address(owner)), true, "Expected the account to be validated.");
+
+    int balance = owner.getBalance(owner);
+    owner.validateAccount(address(owner));
+    owner.createAndGiveMoneyToAllValidatedAccounts(100);
+    Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
+    Assert.equal(owner.getNumberOfValidatedAccounts(), 1, "The number of validated accounts is not as expected.");
   }
 
   function testPayOutNextSalary() {
@@ -68,14 +77,10 @@ contract TestCoinit {
     Assert.equal(owner.getBalance(owner), balance, "The balance is not as expected.");
   }
 
-  function testGiveMoneyToAllEmployees() {
-    int balance = owner.getBalance(owner);
-    owner.createAndGiveMoneyToAllEmployees(100);
-    Assert.equal(owner.getBalance(owner), balance + 100, "The balance is not as expected.");
-  }
 
-  function createAccount(Coinit coinit) {
-    coinit.createAccount("name", "mail");
+
+  function createAccount(Coinit coinit) returns (bool) {
+    return coinit.createAccount("name", "mail");
   }
 
 }

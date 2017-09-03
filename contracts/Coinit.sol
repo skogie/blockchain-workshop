@@ -1,59 +1,86 @@
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.13;
 
 contract Coinit {
     
     struct Account {
         address addr;
-        int amount;
+        int balance;
         bool validated;
         bool exist;
+        string name;
+        string email;
     }
-    
+
     struct TinyAccount {
         address addr;
-        int amount;
+        int balance;
     }
-    
+
     mapping (address => Account) public accounts;
-    
-    address[] private accountsArray;
+
+    address[] public accountsArray;
 
     TinyAccount[] private amountToBePaidOut;
 
-    address private admin;
+    address public admin;
 
     function Coinit() {
-        admin = msg.sender;
         Genesis(msg.sender);
+        admin = msg.sender;
     }
 
-    function validateEmployee(address _emplyeeAdr) isAdmin() {
-        Account acc = accounts[_emplyeeAdr];
-        if (!acc.validated) {
-            accounts[_emplyeeAdr].validated = true;
-            accountsArray.push(_emplyeeAdr);
-            Validate(_emplyeeAdr, true);
-        }
+    function isAccountAdmin() constant returns(bool) {
+        return admin == msg.sender;
     }
     
-    function createAccount(string _name, string _mail)  returns(bool success) {
-        accounts[msg.sender] = Account({addr: msg.sender, amount: 0, validated: false, exist: true});
-        AccountCreated(msg.sender, 0, _name, _mail, false);
+    function createAccount(string _name, string _email)  returns(bool success) {
+        accounts[msg.sender] = Account({addr: msg.sender, balance: 0, validated: false, exist: true, name: _name, email: _email});
         return true;
+    }
+
+    function accountExists() constant returns(bool) {
+        return accounts[msg.sender].exist;
+    }
+
+    function validateAccount(address _accountAddr) isAdmin constant returns(bool) {
+        Account acc = accounts[_accountAddr];
+        if (!acc.validated) {
+            accounts[_accountAddr].validated = true;
+            accountsArray.push(_accountAddr);
+            Validate(_accountAddr, true);
+        }
+    }
+
+    function getValidated(address _addr) constant returns(bool) {
+        return accounts[_addr].validated;
+    }
+
+    function getBalance(address _addr) constant returns(int) {
+        return accounts[_addr].balance;
     }
 
     function createAndSendCoin(address _receiver, int _amount) isAdmin returns(bool) {
-        Account acc = accounts[_receiver];
-        accounts[_receiver].amount += _amount;
+        int prevBalance = accounts[_receiver].balance;
+        accounts[_receiver].balance = prevBalance + _amount;
+        return true;
+    }
+
+    function sendCoin(address _receiver, int _amount) returns(bool sufficient) {
+        require(accounts[msg.sender].balance > _amount);
+        accounts[msg.sender].balance -= _amount;
+        accounts[_receiver].balance += _amount;
         Transfer(msg.sender, _receiver, _amount);
         return true;
     }
 
-    function sendCoin(address _receiver, int _amount) onlyWithBalanceMoreThan(_amount) returns(bool sufficient) {
-        accounts[msg.sender].amount -= _amount;
-        accounts[_receiver].amount += _amount;
-        Transfer(msg.sender, _receiver, _amount);
-        return true;
+    function createAndGiveMoneyToAllValidatedAccounts(int _amount) isAdmin {
+        for (uint i = 0; i < accountsArray.length; i++) {
+            createAndSendCoin(accountsArray[i], _amount);
+        }
+    }
+
+    function getNumberOfValidatedAccounts() constant returns(uint) {
+        return accountsArray.length;
     }
 
     function markForPayOutOnNextSalary(address _addr, int _amount) isAdmin returns(bool sufficient) {
@@ -69,83 +96,37 @@ contract Coinit {
     function payOut() isAdmin {
         for (uint i = 0; i < amountToBePaidOut.length; i++) {
             address addr = amountToBePaidOut[i].addr;
-            int amount = amountToBePaidOut[i].amount;
-            accounts[addr].amount -= amount;
+            int amount = amountToBePaidOut[i].balance;
+            accounts[addr].balance -= amount;
             PayOut(addr, amount);
         }
         delete amountToBePaidOut;
     }
     
-    function createAndGiveMoneyToAllEmployees(int _amount) isAdmin {
-        for (uint i = 0; i < accountsArray.length; i++) {
-            createAndSendCoin(accountsArray[i], _amount);
-        }
-    }
+
 
     function kill() isAdmin {
-        selfdestruct(admin);
-    }
 
-    function accountExists() constant returns(bool) {
-        return accounts[msg.sender].exist == true;
-    }
-    
-    function getBalance() constant returns(int) {
-        return accounts[msg.sender].amount;
-    }
-
-    function getBalance(address adr) constant returns(int) {
-        Account acc = accounts[adr];
-        return acc.amount;
-    }
-
-    function getValidated(address _addr) constant returns(bool) {
-        return accounts[_addr].validated;
-    }
-
-    function isAccountAdmin() constant returns(bool) {
-        return admin == msg.sender;
     }
 
     function isAccountAdmin(address _addr) constant returns(bool) {
-        return admin == _addr;
-    }
 
-    function getAdminAddr() constant returns(address) {
-        return admin;
-    }
-
-    function getSenderAddr() constant returns(address) {
-        return msg.sender;
-    }
-
-    function getNumberOfValidatedEmployees() constant returns(uint) {
-        return accountsArray.length;
-    }
-
-    modifier isValidated() {
-        if (accounts[msg.sender].validated == true) _;
     }
 
     modifier isAdmin() {
-        if (msg.sender != admin)
-            throw;
+        require(msg.sender == admin);
         _;
-    }
-
-    modifier onlyWithBalanceMoreThan(int _amount) {
-        if (accounts[msg.sender].amount >= _amount) _;
     }
 
     event Transfer(address indexed _from, address indexed _to, int _value);
 
-    event Validate(address indexed _employee, bool _value);
+    event Validate(address indexed _account, bool _value);
     
     event Genesis(address indexed _admin);
 
+    event MarkForPayOut(address indexed _account, int _value);
+
     event PayOut(address indexed _account, int _value);
 
-    event MarkForPayOut(address indexed _account, int _value);
-    
-    event AccountCreated(address _addr, int amount, string _name, string _mail, bool validated);
+
 }
