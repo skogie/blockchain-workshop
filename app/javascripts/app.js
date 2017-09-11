@@ -83,7 +83,7 @@ window.App = {
     var coin;
     Coinit.deployed().then(function(instance) {
       coin = instance;
-      return coin.createAccount.sendTransaction(name, email, {from: address});
+      return coin.createAccount.sendTransaction(name, email, {from: address, gas: 1550000});
     }).then(function() {
       console.log(address);
     }).catch(function(e) {
@@ -121,7 +121,7 @@ window.App = {
     var coin;
     Coinit.deployed().then(function(instance) {
       coin = instance;
-      return coin.validateEmployee.sendTransaction(address,{from: account});
+      return coin.validateAccount.sendTransaction(address,{from: account});
     }).catch(function(e) {
       console.log(e);
     });
@@ -134,7 +134,7 @@ window.App = {
     var coin;
     Coinit.deployed().then(function(instance) {
       coin = instance;
-      return coin.isAccountAdmin(address);
+      return coin.isOwner.call({from: address});
     }).then(function(admin) {
       console.log(admin)
       document.getElementById("isadmin").innerHTML = admin.valueOf();
@@ -149,7 +149,7 @@ window.App = {
     var coin;
     Coinit.deployed().then(function(instance) {
       coin = instance;
-      return coin.createAndGiveMoneyToAllEmployees.sendTransaction(100, {from: account});
+      return coin.createAndGiveMoneyToAllValidatedAccounts.sendTransaction(100, {from: account});
     }).then(function() {
       console.log(account)
     }).catch(function(e) {

@@ -15,7 +15,7 @@ contract TestCoinit {
 
   function testInitialBalanceUsingDeployedContract() {
     int expected = 0;
-    Assert.equal(owner.isAccountAdmin(), true, "Expected the owner to be admin");
+    Assert.equal(owner.isOwner(), true, "Expected the owner to be admin");
   }
 
   function testCreateAccount() {
@@ -32,7 +32,7 @@ contract TestCoinit {
 
   function testThatCreatorIsAdmin() {
     Coinit coinit = new Coinit();
-    Assert.equal(coinit.isAccountAdmin(), true, "Expected the owner to be admin");
+    Assert.equal(coinit.isOwner(), true, "Expected the owner to be admin");
   }
 
   function testValidateAccount() {
@@ -42,7 +42,7 @@ contract TestCoinit {
 
   function testCreateAndSendCoin() {
     createAccount(owner);
-    Assert.equal(owner.isAccountAdmin(), true, "Expected the owner to be owner");
+    Assert.equal(owner.isOwner(), true, "Expected the owner to be owner");
     int balance = owner.getBalance(owner);
     owner.createAndSendCoin(address(owner), 100);
     Assert.equal(owner.getBalance(address(owner)), balance + 100, "The balance is not as expected.");

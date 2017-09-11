@@ -29,11 +29,11 @@ contract Coinit {
         admin = msg.sender;
     }
 
-    function isAccountAdmin() constant returns(bool) {
+    function isOwner() constant returns(bool) {
         return admin == msg.sender;
     }
     
-    function createAccount(string _name, string _email)  returns(bool success) {
+    function createAccount(string _name, string _email) returns(bool success) {
         accounts[msg.sender] = Account({addr: msg.sender, balance: 0, validated: false, exist: true, name: _name, email: _email});
         return true;
     }
@@ -42,12 +42,12 @@ contract Coinit {
         return accounts[msg.sender].exist;
     }
 
-    function validateAccount(address _accountAddr) isAdmin constant returns(bool) {
+    function validateAccount(address _accountAddr) isAdmin returns(bool) {
         Account acc = accounts[_accountAddr];
         if (!acc.validated) {
             accounts[_accountAddr].validated = true;
             accountsArray.push(_accountAddr);
-            Validate(_accountAddr, true);
+            Validate(_accountAddr, true);   
         }
     }
 
@@ -90,7 +90,9 @@ contract Coinit {
     }
 
     function payOutOnNextSalary(int _amount) returns(bool sufficient) {
-        return markForPayOutOnNextSalary(msg.sender, _amount);
+        amountToBePaidOut.push(TinyAccount(msg.sender, _amount));
+        MarkForPayOut(msg.sender, _amount);
+        return true;
     }
     
     function payOut() isAdmin {
@@ -103,14 +105,8 @@ contract Coinit {
         delete amountToBePaidOut;
     }
     
-
-
     function kill() isAdmin {
-
-    }
-
-    function isAccountAdmin(address _addr) constant returns(bool) {
-
+        selfdestruct(admin);
     }
 
     modifier isAdmin() {
