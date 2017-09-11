@@ -35,6 +35,7 @@ contract Coinit {
     
     function createAccount(string _name, string _email) returns(bool success) {
         accounts[msg.sender] = Account({addr: msg.sender, balance: 0, validated: false, exist: true, name: _name, email: _email});
+        CreateAccount(msg.sender, 0, false, true, _name, _email);
         return true;
     }
 
@@ -66,7 +67,7 @@ contract Coinit {
     }
 
     function sendCoin(address _receiver, int _amount) returns(bool sufficient) {
-        require(accounts[msg.sender].balance > _amount);
+        require(_amount > 0 && accounts[msg.sender].balance >= _amount);
         accounts[msg.sender].balance -= _amount;
         accounts[_receiver].balance += _amount;
         Transfer(msg.sender, _receiver, _amount);
@@ -113,6 +114,8 @@ contract Coinit {
         require(msg.sender == admin);
         _;
     }
+
+    event CreateAccount(address indexed _addr, int _balance, bool _validated, bool _exist, string _name, string _email);
 
     event Transfer(address indexed _from, address indexed _to, int _value);
 
